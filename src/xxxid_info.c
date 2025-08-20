@@ -239,6 +239,8 @@ inline void free_stats(struct xxxid_stats *s) {
 		free(s->cmdline1);
 	if (s->cmdline2)
 		free(s->cmdline2);
+	if (s->thread_name)
+		free(s->thread_name);
 	if (s->pw_name)
 		free(s->pw_name);
 	arr_free_noitem(s->threads);
@@ -252,6 +254,7 @@ inline struct xxxid_stats *make_stats(pid_t tid,pid_t pid) {
 	struct passwd *pwd;
 	char *cmdline1;
 	char *cmdline2;
+	char *thread_name;
 	int prio;
 
 	if (!s)
@@ -270,9 +273,11 @@ inline struct xxxid_stats *make_stats(pid_t tid,pid_t pid) {
 
 	cmdline1=read_cmdline(tid,1);
 	cmdline2=read_cmdline(tid,0);
+	thread_name=read_thread_name(pid,tid);
 
 	s->cmdline1=cmdline1?cmdline1:strdup(unknown);
 	s->cmdline2=cmdline2?cmdline2:strdup(unknown);
+	s->thread_name=thread_name?thread_name:strdup(unknown);
 	pwd=getpwuid(s->euid);
 	s->pw_name=strdup(pwd&&pwd->pw_name?pwd->pw_name:unknown);
 

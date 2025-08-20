@@ -99,7 +99,15 @@ static inline void view_batch(struct xxxid_stats_arr *cs,struct xxxid_stats_arr 
 
 		pw_name=u8strpadt(s->pw_name,10);
 
-		printf("%6i %4s %s %7.2f %-3.3s %7.2f %-3.3s %2.2f %% %2.2f %% %s\n",s->tid,str_ioprio(s->io_prio),pw_name?pw_name:"(null)",read_val,read_str,write_val,write_str,swapin_val,blkio_val,config.f.fullcmdline?s->cmdline2:s->cmdline1);
+		// Show thread name for threads, command line for processes
+		const char *display_name;
+		if (s->pid != s->tid && s->thread_name && strcmp(s->thread_name, "<unknown>") != 0) {
+			display_name = s->thread_name;
+		} else {
+			display_name = config.f.fullcmdline?s->cmdline2:s->cmdline1;
+		}
+		
+		printf("%6i %4s %s %7.2f %-3.3s %7.2f %-3.3s %2.2f %% %2.2f %% %s\n",s->tid,str_ioprio(s->io_prio),pw_name?pw_name:"(null)",read_val,read_str,write_val,write_str,swapin_val,blkio_val,display_name);
 
 		if (pw_name)
 			free(pw_name);

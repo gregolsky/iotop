@@ -118,6 +118,31 @@ inline char *read_cmdline(int pid,int isshort) {
 	return rv;
 }
 
+inline char *read_thread_name(int pid, int tid) {
+	char *rv=NULL;
+	char path[50];
+	int fd;
+
+	snprintf(path,sizeof path,"/proc/%d/task/%d/comm",pid,tid);
+	fd=open(path,O_RDONLY);
+	if (fd!=-1) {
+		char buf[256];
+		ssize_t n=read(fd,buf,sizeof buf-1);
+
+		close(fd);
+
+		if (n>0) {
+			buf[n]=0;
+			// Remove trailing newline if present
+			if (n>0&&buf[n-1]=='\n')
+				buf[n-1]=0;
+			rv=strdup(buf);
+		}
+	}
+
+	return rv;
+}
+
 inline void pidgen_cb(pg_cb cb,struct xxxid_stats_arr *hint1,filter_callback hint2) {
 	DIR *pr;
 

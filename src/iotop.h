@@ -146,6 +146,7 @@ struct xxxid_stats {
 	int euid;
 	char *cmdline1;
 	char *cmdline2;
+	char *thread_name;
 	char *pw_name;
 
 	uint8_t iohist[HISTORY_CNT]; // io history data
@@ -212,6 +213,7 @@ inline int masked_sort_by(int isforward);
 /* utils.c */
 
 inline char *read_cmdline(int pid,int isshort);
+inline char *read_thread_name(int pid, int tid);
 
 inline int64_t monotime(void);
 inline char *u8strpadt(const char *s,ssize_t len);

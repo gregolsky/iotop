@@ -1206,7 +1206,12 @@ static inline void view_curses(struct xxxid_stats_arr *cs,struct xxxid_stats_arr
 			pw_name=u8strpadt(pwt,9);
 			if (pwt)
 				free(pwt);
-			cmdt=esc_low_ascii(config.f.fullcmdline?s->cmdline2:s->cmdline1);
+			// Show thread name for threads, command line for processes
+			if (s->pid != s->tid && s->thread_name && strcmp(s->thread_name, "<unknown>") != 0) {
+				cmdt=esc_low_ascii(s->thread_name);
+			} else {
+				cmdt=esc_low_ascii(config.f.fullcmdline?s->cmdline2:s->cmdline1);
+			}
 			cmdline=u8strpadt(cmdt,maxcmdline-1); // -1 for thread/process link chars
 			if (cmdt)
 				free(cmdt);
